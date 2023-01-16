@@ -37,12 +37,7 @@ class PongMySQL:
                 await cur.execute(command)
                 (result,) = await cur.fetchone()
 
-        ok = True
-
-        if result != "Ok":
-            ok = False
-
-        return ok, result
+        return result == "Ok", result
 
     async def login(self, username: str, password: str) -> tuple[bool, str]:
         return await self._pserver_execute(f'select login_user("{username}", "{password}");')

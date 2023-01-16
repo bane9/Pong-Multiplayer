@@ -5,32 +5,16 @@ Returns:
 """
 
 import asyncio
-from aiohttp import web
-from global_config import GlobalConfig
+from pong_server import PongServer
 
 
-async def handle(request: web.Request):
-    name = request.match_info.get("name", "Anonymous")
-    text = "Hello, " + name
-    return web.Response(text=text)
-
-
-async def main():
-    GlobalConfig.web_server = web.Application()
-
-    GlobalConfig.web_server.add_routes([web.get("/", handle), web.get("/{name}", handle)])
-
-    runner = web.AppRunner(GlobalConfig.web_server)
-    await runner.setup()
-    site = web.TCPSite(runner, GlobalConfig.SERVER_HOST, GlobalConfig.SERVER_PORT)
-    await site.start()
-
-
-def init_main():
+def main():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    asyncio.ensure_future(main())
+    server = PongServer()
+
+    asyncio.ensure_future(server.init_server())
 
     try:
         loop.run_forever()
@@ -39,4 +23,4 @@ def init_main():
 
 
 if __name__ == "__main__":
-    init_main()
+    main()

@@ -4,6 +4,7 @@ import pygame
 import pygame_menu
 
 from global_config import GlobalConfig
+from server import PongServer
 from ..window_state import WindowState
 
 
@@ -31,8 +32,9 @@ class MainMenu(WindowState):
             theme=pygame_menu.themes.THEME_DARK,
         )
 
-        self.login_menu.add.text_input("Username", textinput_id="username")
-        self.login_menu.add.text_input("Password", textinput_id="password")
+        self.login_menu.add.text_input("Username: ", textinput_id="username")
+        self.login_menu.add.text_input("Password: ", textinput_id="password", password=True)
+        self.login_menu.add.text_input("", textinput_id="status")
         self.login_menu.add.button("Login", self.attempt_login)
         self.login_menu.add.button("Quit", pygame_menu.events.EXIT)
 
@@ -44,8 +46,12 @@ class MainMenu(WindowState):
 
     def attempt_login(self):
         """_summary_"""
-        self.is_logged_in = True
-        self.login_menu.disable()
+        username = self.login_menu.get_widget("username").get_value()
+        password = self.login_menu.get_widget("password").get_value()
+        self.is_logged_in, resp = PongServer.login(username, password)
+        self.login_menu.get_widget("status").set_value(resp)
+        if self.is_logged_in:
+            self.login_menu.disable()
 
     def start_game(self):
         """_summary_"""
