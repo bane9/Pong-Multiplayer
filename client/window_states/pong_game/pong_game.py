@@ -86,7 +86,7 @@ class PongGame(WindowState):
             self.opponent_idx = 2
         else:
             self.player = self.paddleB
-            self.opponent = self.paddleB
+            self.opponent = self.paddleA
             self.player_idx = 2
             self.opponent_idx = 1
 
@@ -101,9 +101,9 @@ class PongGame(WindowState):
         player_pos = list(self.player.get_position())
 
         if keys[pygame.K_UP]:
-            player_pos[1] += 5
-        elif keys[pygame.K_DOWN]:
             player_pos[1] -= 5
+        elif keys[pygame.K_DOWN]:
+            player_pos[1] += 5
 
         recv = self.com.transcieve({"evt": "update", "position": player_pos})
 
@@ -114,6 +114,12 @@ class PongGame(WindowState):
         self.all_sprites_list.update()
 
         pygame.draw.line(GlobalConfig.screen, self.WHITE, (349, 0), (349, 500), 5)
+
+        font = pygame.font.Font(None, 74)
+        text = font.render(str(recv["score1"]), 1, self.WHITE)
+        GlobalConfig.screen.blit(text, (250, 10))
+        text = font.render(str(recv["score2"]), 1, self.WHITE)
+        GlobalConfig.screen.blit(text, (420, 10))
 
         self.all_sprites_list.draw(GlobalConfig.screen)
 

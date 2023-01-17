@@ -55,4 +55,7 @@ class ServerCommunicator:
         self.tx_queue.sync_q.put(json.dumps(data))
         recv = self.rx_queue.sync_q.get()
 
-        return json.loads(recv)
+        data = json.loads(recv)
+        # print(data)
+
+        return data
