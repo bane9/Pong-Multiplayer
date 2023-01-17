@@ -11,6 +11,18 @@
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Python: Service Main",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/pong_service/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "127.0.0.1",
+                "8765"
+            ]
         }
     ]
 }

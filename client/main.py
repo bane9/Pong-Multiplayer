@@ -19,7 +19,7 @@ def game_loop():
     state_manager.add_state(ws.PongGame())
     state_manager.add_state(ws.ScoreMenu())
 
-    state_manager.set_state(ws.MainMenu.state_id)
+    state_manager.set_state(ws.PongGame.state_id)
 
     while True:
         GlobalConfig.screen.fill(GlobalConfig.SCREEN_CLEAR_COLOR)

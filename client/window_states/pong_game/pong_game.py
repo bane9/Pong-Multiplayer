@@ -7,6 +7,7 @@ Returns:
 import pygame
 
 from global_config import GlobalConfig
+from server import ServerCommunicator
 
 from .ball import Ball
 from .paddle import Paddle
@@ -47,6 +48,12 @@ class PongGame(WindowState):
         self.scoreB = 0
 
         self.player: Paddle = None
+        self.opponent: Paddle = None
+
+        self.player_idx = 0
+        self.opponent_idx = 0
+
+        self.com = ServerCommunicator()
 
     def _reset(self):
         """_summary_"""
@@ -68,10 +75,20 @@ class PongGame(WindowState):
         self.set_shared_data(shared_data)
         self._reset()
 
-        if shared_data["player"] == 0:
+        self.com.connect("ws://127.0.0.1:8765")
+
+        shared_data["player"] = self.com.transcieve({"evt": "query"})["player"]
+
+        if shared_data["player"] == 1:
             self.player = self.paddleA
+            self.opponent = self.paddleB
+            self.player_idx = 1
+            self.opponent_idx = 2
         else:
             self.player = self.paddleB
+            self.opponent = self.paddleB
+            self.player_idx = 2
+            self.opponent_idx = 1
 
     def on_loop(self, _: list[pygame.event.Event]):
         """_summary_
@@ -80,41 +97,25 @@ class PongGame(WindowState):
             _ (list[pygame.event.Event]): _description_
         """
         keys = pygame.key.get_pressed()
+
+        player_pos = list(self.player.get_position())
+
         if keys[pygame.K_UP]:
-            self.player.move_up(5)
+            player_pos[1] += 5
         elif keys[pygame.K_DOWN]:
-            self.player.move_down(5)
+            player_pos[1] -= 5
+
+        recv = self.com.transcieve({"evt": "update", "position": player_pos})
+
+        self.player.set_position(*recv[f"player{self.player_idx}"])
+        self.opponent.set_position(*recv[f"player{self.opponent_idx}"])
+        self.ball.set_position(*recv["ball"])
 
         self.all_sprites_list.update()
-
-        if self.ball.rect.x >= 690:
-            self.scoreA += 1
-            self.ball.velocity[0] = -self.ball.velocity[0]
-        if self.ball.rect.x <= 0:
-            self.scoreB += 1
-            self.ball.velocity[0] = -self.ball.velocity[0]
-        if self.ball.rect.y > 490:
-            self.ball.velocity[1] = -self.ball.velocity[1]
-        if self.ball.rect.y < 0:
-            self.ball.velocity[1] = -self.ball.velocity[1]
-
-        if pygame.sprite.collide_mask(self.ball, self.paddleA) or pygame.sprite.collide_mask(self.ball, self.paddleB):
-            self.ball.bounce()
 
         pygame.draw.line(GlobalConfig.screen, self.WHITE, (349, 0), (349, 500), 5)
 
         self.all_sprites_list.draw(GlobalConfig.screen)
-
-        font = pygame.font.Font(None, 74)
-        text = font.render(str(self.scoreA), 1, self.WHITE)
-        GlobalConfig.screen.blit(text, (250, 10))
-        text = font.render(str(self.scoreB), 1, self.WHITE)
-        GlobalConfig.screen.blit(text, (420, 10))
-
-        if self.scoreA >= self.LEVEL_CAP or self.scoreB >= self.LEVEL_CAP:
-            self.shared_data["player1_score"] = self.scoreA
-            self.shared_data["player2_score"] = self.scoreB
-            self._should_switch_state = True
 
     @classmethod
     @property
