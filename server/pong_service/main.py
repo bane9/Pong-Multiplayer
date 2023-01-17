@@ -145,7 +145,7 @@ async def handle_connect(websocket, _: str):
         # print("got: ", data)
 
         if data["evt"] == "update":
-            x, y = data["position"]
+            y = data["position"]
 
             update_data[player_str][0] = 20 if cur_player == 1 else 670
             update_data[player_str][1] = clamp(y, 0, 400)

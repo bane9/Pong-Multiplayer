@@ -105,7 +105,7 @@ class PongGame(WindowState):
         elif keys[pygame.K_DOWN]:
             player_pos[1] += 5
 
-        recv = self.com.transcieve({"evt": "update", "position": player_pos})
+        recv = self.com.transcieve({"evt": "update", "position": player_pos[1]})
 
         self.player.set_position(*recv[f"player{self.player_idx}"])
         self.opponent.set_position(*recv[f"player{self.opponent_idx}"])
