@@ -24,8 +24,15 @@ class PongServer:
         return resp.status_code == 200, resp.text
 
     @classmethod
-    def new_session(cls, host_username: str = "") -> tuple[bool, str]:
+    def new_session(cls, host_username: str = "") -> tuple[bool, dict[str, str or int]]:
         data = {"host_username": host_username}
-        resp = requests.post(cls.SERVER_ADDRESS + "/login", json=data, timeout=cls.TIMEOUT)
+        resp = requests.get(cls.SERVER_ADDRESS + "/new_session", json=data, timeout=cls.TIMEOUT)
+
+        return resp.status_code == 200, resp.json()
+
+    @classmethod
+    def get_session(cls, session: str) -> tuple[bool, str]:
+        data = {"session": session}
+        resp = requests.get(cls.SERVER_ADDRESS + "/get_session", json=data, timeout=cls.TIMEOUT)
 
         return resp.status_code == 200, resp.text

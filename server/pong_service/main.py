@@ -107,17 +107,20 @@ async def update_ball():
     global ball
     global player
 
+    print("Started")
+
     while True:
         if player >= 2:
             if ball.rect.x >= 690:
                 update_data["score1"] += 1
                 ball.velocity[0] = -ball.velocity[0]
-            if ball.rect.x <= 0:
+            elif ball.rect.x <= 0:
                 update_data["score2"] += 1
                 ball.velocity[0] = -ball.velocity[0]
+
             if ball.rect.y > 490:
                 ball.velocity[1] = -ball.velocity[1]
-            if ball.rect.y < 0:
+            elif ball.rect.y < 0:
                 ball.velocity[1] = -ball.velocity[1]
 
             ball.update()
@@ -157,8 +160,12 @@ async def handle_connect(websocket, _: str):
 
 
 def main():
+    print("Service booted", sys.argv)
+
     hostname = sys.argv[1]
     port = int(sys.argv[2])
+
+    print(f"{hostname=} {port=}")
 
     start_server = server.serve(handle_connect, hostname, port)
 

@@ -75,7 +75,14 @@ class PongGame(WindowState):
         self.set_shared_data(shared_data)
         self._reset()
 
-        self.com.connect("ws://127.0.0.1:8765")
+        self.com.connect(shared_data["instance_host"])
+
+        window_caption = "Pong"
+
+        if "session_id" in shared_data and shared_data["session_id"]:
+            window_caption += f' | Game ID: {shared_data["session_id"]}'
+
+        pygame.display.set_caption(window_caption)
 
         shared_data["player"] = self.com.transcieve({"evt": "query"})["player"]
 

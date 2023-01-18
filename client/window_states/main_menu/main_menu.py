@@ -34,12 +34,13 @@ class MainMenu(WindowState):
 
         self.login_menu.add.text_input("Username: ", textinput_id="username")
         self.login_menu.add.text_input("Password: ", textinput_id="password", password=True)
-        self.login_menu.add.text_input("", textinput_id="status")
+        self.login_menu.add.label("", label_id="status")
         self.login_menu.add.button("Login", self.attempt_login)
         self.login_menu.add.button("Quit", pygame_menu.events.EXIT)
 
         self.start_game_menu.add.button("Start game", self.start_game)
-        self.start_game_menu.add.text_input("Game ID", textinput_id="game_id")
+        self.start_game_menu.add.text_input("Game ID: ", textinput_id="game_id")
+        self.start_game_menu.add.label("", label_id="status")
         self.start_game_menu.add.button("Join game", self.join_game)
 
         self.is_logged_in = False
@@ -49,21 +50,30 @@ class MainMenu(WindowState):
         username = self.login_menu.get_widget("username").get_value()
         password = self.login_menu.get_widget("password").get_value()
         self.is_logged_in, resp = PongServer.login(username, password)
-        self.login_menu.get_widget("status").set_value(resp)
+        self.login_menu.get_widget("status").set_title(resp)
         if self.is_logged_in:
             self.login_menu.disable()
 
     def start_game(self):
         """_summary_"""
         self._should_switch_state = True
-        self.shared_data["player"] = 0
+        _, session_data = PongServer.new_session()
+        self.shared_data["instance_host"] = session_data["host"]
+        self.shared_data["session_id"] = session_data["session"]
         self.start_game_menu.disable()
 
     def join_game(self):
         """_summary_"""
-        self._should_switch_state = True
-        self.shared_data["player"] = 1
-        self.start_game_menu.disable()
+
+        session = self.start_game_menu.get_widget("game_id").get_value()
+        ok, session = PongServer.get_session(session)
+
+        if ok:
+            self._should_switch_state = True
+            self.shared_data["instance_host"] = session
+            self.start_game_menu.disable()
+        else:
+            self.start_game_menu.get_widget("status").set_title("Invalid session ID")
 
     def enter_state(self, shared_data: dict[str, str or int]):
         """_summary_
