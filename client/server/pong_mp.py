@@ -4,6 +4,7 @@ import websockets
 import janus
 import json
 import time
+import ctypes
 
 
 class ServerCommunicator:
@@ -14,6 +15,7 @@ class ServerCommunicator:
         self._running = False
         self._thread: threading.Thread = None
         self._loop: asyncio.AbstractEventLoop = None
+        self._tid = 0
 
     def connect(self, address: str):
         self._address = address
@@ -24,12 +26,12 @@ class ServerCommunicator:
             time.sleep(0.1)
 
     def disconnect(self):
-        self._loop.call_soon_threadsafe(asyncio.futures.Future, self._disconnect())
-        self._thread.join()
-
-    async def _disconnect(self):
         self._running = False
-        self._loop.close()
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(self._tid), ctypes.py_object(KeyboardInterrupt()))
+
+    def _disconnect(self):
+        self._running = False
+        self._thread.join()
 
     async def _connection_loop(self):
         self.rx_queue = janus.Queue()
@@ -45,11 +47,10 @@ class ServerCommunicator:
                 await self.rx_queue.async_q.put(recv)
 
     def _connection_thread(self):
+        self._tid = threading.get_native_id()
         self._loop = asyncio.new_event_loop()
         self._loop.run_until_complete(self._connection_loop())
-
-        if self._running:
-            self._loop.close()
+        self._loop.close()
 
     def transcieve(self, data: dict[str, str or int]) -> dict[str, str or int]:
         self.tx_queue.sync_q.put(json.dumps(data))

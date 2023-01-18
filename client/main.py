@@ -1,6 +1,8 @@
 """_summary_
 """
 
+import os
+
 import pygame
 
 from global_config import GlobalConfig
@@ -28,7 +30,7 @@ def game_loop():
 
         for event in events:
             if event.type == pygame.QUIT:
-                return
+                os._exit(0)
 
         state_manager.on_loop(events)
 

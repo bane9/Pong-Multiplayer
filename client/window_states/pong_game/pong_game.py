@@ -114,21 +114,31 @@ class PongGame(WindowState):
 
         recv = self.com.transcieve({"evt": "update", "position": player_pos[1]})
 
-        self.player.set_position(*recv[f"player{self.player_idx}"])
-        self.opponent.set_position(*recv[f"player{self.opponent_idx}"])
-        self.ball.set_position(*recv["ball"])
+        if recv["status"] == "run":
+            self.player.set_position(*recv[f"player{self.player_idx}"])
+            self.opponent.set_position(*recv[f"player{self.opponent_idx}"])
+            self.ball.set_position(*recv["ball"])
 
-        self.all_sprites_list.update()
+            self.all_sprites_list.update()
 
-        pygame.draw.line(GlobalConfig.screen, self.WHITE, (349, 0), (349, 500), 5)
+            pygame.draw.line(GlobalConfig.screen, self.WHITE, (349, 0), (349, 500), 5)
 
-        font = pygame.font.Font(None, 74)
-        text = font.render(str(recv["score1"]), 1, self.WHITE)
-        GlobalConfig.screen.blit(text, (250, 10))
-        text = font.render(str(recv["score2"]), 1, self.WHITE)
-        GlobalConfig.screen.blit(text, (420, 10))
+            font = pygame.font.Font(None, 74)
+            text = font.render(str(recv["score1"]), 1, self.WHITE)
+            GlobalConfig.screen.blit(text, (250, 10))
+            text = font.render(str(recv["score2"]), 1, self.WHITE)
+            GlobalConfig.screen.blit(text, (420, 10))
 
-        self.all_sprites_list.draw(GlobalConfig.screen)
+            self.all_sprites_list.draw(GlobalConfig.screen)
+        elif recv["status"] == "end":
+            self._should_switch_state = True
+            if self.shared_data["player"] == 1:
+                self.shared_data["player_score"] = recv["score1"]
+                self.shared_data["opponent_score"] = recv["score2"]
+            else:
+                self.shared_data["player_score"] = recv["score2"]
+                self.shared_data["opponent_score"] = recv["score1"]
+            self.com.disconnect()
 
     @classmethod
     @property

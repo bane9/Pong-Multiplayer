@@ -1,13 +1,12 @@
 """_summary_
 """
-
-import asyncio
-import websockets
-from websockets import server
 import sys
 import json
-import random
+import asyncio
 from random import randint
+from websockets import server
+
+MAX_SCORE = 5
 
 
 class Rect:
@@ -130,6 +129,9 @@ async def update_ball():
 
             update_data["ball"] = ball.get_position()
 
+            if update_data["score1"] == MAX_SCORE or update_data["score2"] == MAX_SCORE:
+                return
+
         await asyncio.sleep(0.016666)
 
 
@@ -145,15 +147,25 @@ async def handle_connect(websocket, _: str):
     while True:
         data = json.loads(await websocket.recv())
 
-        # print("got: ", data)
-
         if data["evt"] == "update":
+            if update_data["score1"] == MAX_SCORE or update_data["score2"] == MAX_SCORE:
+                await websocket.send(
+                    json.dumps({"status": "end", "score1": update_data["score1"], "score2": update_data["score2"]})
+                )
+
+                player -= 1
+
+                if player <= 0:
+                    sys.exit(0)
+
             y = data["position"]
 
             update_data[player_str][0] = 20 if cur_player == 1 else 670
             update_data[player_str][1] = clamp(y, 0, 400)
 
-            await websocket.send(json.dumps(update_data))
+            to_send = {"status": "run", **update_data}
+
+            await websocket.send(json.dumps(to_send))
 
         elif data["evt"] == "query":
             await websocket.send(f'{{"player": {cur_player}}}')

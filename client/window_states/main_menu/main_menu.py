@@ -87,6 +87,8 @@ class MainMenu(WindowState):
         else:
             self.start_game_menu.enable()
 
+        self.start_game_menu.get_widget("game_id").set_value("")
+
     def on_loop(self, events: list[pygame.event.Event]):
         """_summary_
 

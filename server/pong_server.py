@@ -1,13 +1,12 @@
 """_summary_
 """
-
+import subprocess
+import sys
 from aiohttp import web
+
 from global_config import GlobalConfig
 from pong_mysql import PongMySQL
-import subprocess
 from pong_service import main as pong_main
-import sys
-import asyncio
 
 
 class PongServer:
@@ -64,8 +63,6 @@ class PongServer:
             print(f"{self.portn}:", line.strip())
             if "Started" in line:
                 break
-
-        # await asyncio.sleep(1)
 
         host = f"ws://127.0.0.1:{self.portn}"
 

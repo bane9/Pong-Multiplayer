@@ -51,12 +51,8 @@ class ScoreMenu(WindowState):
         opponent_score_label = self.score_menu.get_widget("opponent_score")
         winner_label = self.score_menu.get_widget("winner")
 
-        if self.shared_data["player"] == 0:
-            your_score = self.shared_data["player1_score"]
-            opponent_score = self.shared_data["player2_score"]
-        else:
-            your_score = self.shared_data["player2_score"]
-            opponent_score = self.shared_data["player1_score"]
+        your_score = self.shared_data["player_score"]
+        opponent_score = self.shared_data["opponent_score"]
 
         your_score_label.set_title(f"Your score: {your_score}")
         opponent_score_label.set_title(f"Opponent's score: {opponent_score}")
