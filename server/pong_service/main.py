@@ -3,11 +3,11 @@
 import sys
 import asyncio
 
-from game import PongGameService
-from pong_service_server import PongServiceServer
-
 
 def main():
+    from game import PongGameService
+    from pong_service_server import PongServiceServer
+
     print("Service booted", sys.argv)
 
     hostname = sys.argv[1]

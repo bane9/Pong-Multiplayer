@@ -50,7 +50,7 @@ class PongServer:
 
     async def handle_new_session(self, _: web.Request):
         p = subprocess.Popen(
-            f'"{sys.executable}" "{pong_main.__file__}" 127.0.0.1 {self.portn}',
+            f'"{sys.executable}" "{pong_main.__file__}" 0.0.0.0 {self.portn}',
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

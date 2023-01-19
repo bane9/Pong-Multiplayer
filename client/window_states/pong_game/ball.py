@@ -28,16 +28,6 @@ class Ball(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-    def update(self):
-        """_summary_"""
-        self.rect.x += self.velocity[0]
-        self.rect.y += self.velocity[1]
-
-    def bounce(self):
-        """_summary_"""
-        self.velocity[0] = -self.velocity[0]
-        self.velocity[1] = randint(-8, 8)
-
     def set_position(self, x: int, y: int):
         """_summary_
 

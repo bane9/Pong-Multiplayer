@@ -1,0 +1,5 @@
+janus==1.0.0
+pygame==2.1.2
+pygame-menu==4.3.6
+requests==2.28.2
+websockets==10.4

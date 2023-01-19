@@ -25,28 +25,6 @@ class Paddle(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-    def move_up(self, pixels):
-        """_summary_
-
-        Args:
-            pixels (_type_): _description_
-        """
-        self.rect.y -= pixels
-
-        if self.rect.y < 0:
-            self.rect.y = 0
-
-    def move_down(self, pixels):
-        """_summary_
-
-        Args:
-            pixels (_type_): _description_
-        """
-        self.rect.y += pixels
-
-        if self.rect.y > 400:
-            self.rect.y = 400
-
     def set_position(self, x: int, y: int):
         """_summary_
 

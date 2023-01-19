@@ -12,5 +12,5 @@ class GlobalConfig:
     SQL_PASSWORD = "root"
     SQL_PORT = 3306
 
-    SERVER_HOST = "127.0.0.1"
+    SERVER_HOST = "0.0.0.0"
     SERVER_PORT = 8080
