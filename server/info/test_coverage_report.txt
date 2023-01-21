@@ -1,0 +1,27 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.10.9, pytest-7.2.1, pluggy-1.0.0
+rootdir: /Users/bane9/Projects/master/Pong Multiplayer/Pong Multiplayer/server
+plugins: asyncio-0.20.3, cov-4.0.0
+asyncio: mode=strict
+collected 4 items
+
+pong_service/tests/test_game.py ...                                      [ 75%]
+tests/test_pong_mysql.py .                                               [100%]
+
+---------- coverage: platform darwin, python 3.10.9-final-0 ----------
+Name                                  Stmts   Miss  Cover
+---------------------------------------------------------
+global_config.py                          9      0   100%
+pong_mysql.py                            25     11    56%
+pong_service/__init__.py                  0      0   100%
+pong_service/game.py                     97     55    43%
+pong_service/pong_service_server.py      46     34    26%
+pong_service/tests/__init__.py            0      0   100%
+pong_service/tests/test_game.py          22      0   100%
+tests/__init__.py                         0      0   100%
+tests/test_pong_mysql.py                 16      0   100%
+---------------------------------------------------------
+TOTAL                                   215    100    53%
+
+
+============================== 4 passed in 0.13s ===============================
